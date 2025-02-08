@@ -1,11 +1,11 @@
 package com.illumio.reader.tag;
 
-import com.illumio.model.entity.Protocol;
+import com.illumio.utils.FileUtils;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class FileTagLookup implements TagLookup {
     private final Map<String, String> lookupTable = new HashMap<>();
@@ -34,25 +34,18 @@ public class FileTagLookup implements TagLookup {
 
     @Override
     public void loadTags() throws IOException {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath)) {
-            if (inputStream == null) {
-                throw new FileNotFoundException("Resource file not found: " + filePath);
-            }
+        List<String> tagLookUp = FileUtils.readAllLines(filePath);
+        // skip first line
+        tagLookUp.remove(0);
+        for (String line : tagLookUp) {
+            String[] parts = line.split(",");
+            if (parts.length < 3) continue;
 
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-                String line;
-                br.readLine();
-                while ((line = br.readLine()) != null) {
-                    String[] parts = line.split(",");
-                    if (parts.length < 3) continue;
+            int port = Integer.parseInt(parts[0].trim());
+            String protocol = parts[1].trim().toLowerCase();
+            String tag = parts[2].trim();
 
-                    int port = Integer.parseInt(parts[0].trim());
-                    String protocol = parts[1].trim().toLowerCase();
-                    String tag = parts[2].trim();
-
-                    lookupTable.put(port + "," + protocol, tag);
-                }
-            }
+            lookupTable.put(port + "," + protocol, tag);
         }
     }
 

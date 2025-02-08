@@ -4,6 +4,7 @@ import com.illumio.model.entity.FlowLogEntry;
 import com.illumio.model.entity.Protocol;
 import com.illumio.reader.flow.FlowLogReader;
 import com.illumio.reader.tag.TagLookup;
+import com.illumio.writer.FlowLogWriter;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class FlowLogParser {
     private Map<String, Integer> tagCounts = new HashMap<>();
     private Map<String, Integer> portProtocolCounts = new HashMap<>();
     private FlowLogReader logReader;
+    private FlowLogWriter writer;
 
     public Map<String, Integer> getTagCounts() {
         return tagCounts;
@@ -30,6 +32,10 @@ public class FlowLogParser {
     public FlowLogParser(FlowLogReader flowLogReader, TagLookup tagLookup) throws IOException {
         this.logReader = flowLogReader;
         this.tagLookup = tagLookup;
+    }
+
+    public void setWriter(FlowLogWriter writer) {
+        this.writer = writer;
     }
 
     public void setLogReader(FlowLogReader logReader) {
@@ -75,4 +81,11 @@ public class FlowLogParser {
         portProtocolCounts.forEach((combo, count) -> System.out.println(combo + "," + count));
     }
 
+    public void writeTagCountsToFile() throws IOException {
+        writer.write(tagCounts);
+    }
+
+    public void writePortProtocolCountsToFile() throws IOException {
+        writer.write(portProtocolCounts);
+    }
 }

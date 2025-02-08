@@ -1,10 +1,9 @@
 package com.illumio.utils;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class FileUtils {
@@ -24,5 +23,13 @@ public class FileUtils {
         List<String> lines = new ArrayList<>();
         processLines(fileName, lines::add);
         return lines;
+    }
+    public static void writeMapToFile(Map<String, Integer> map, String filename, boolean append) throws IOException {
+        String resourcePath = "src/main/resources/" + filename;
+        try (FileWriter writer = new FileWriter(resourcePath, append)) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                writer.write(entry.getKey() + "," + entry.getValue() + "\n");
+            }
+        }
     }
 }
