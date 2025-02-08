@@ -69,7 +69,7 @@ public class FlowLogParser {
     }
 
     public String buildKey(FlowLogEntry flowLogEntry) {
-        return flowLogEntry.getDstPort() + "," + Protocol.fromName(flowLogEntry.getProtocol()).getName();
+        return (flowLogEntry.getDstPort() + "," + Protocol.fromName(flowLogEntry.getProtocol()).getName()).toLowerCase();
     }
 
 
